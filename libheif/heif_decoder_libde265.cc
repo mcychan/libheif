@@ -30,7 +30,7 @@
 #include <memory>
 #include <cstring>
 
-#include <libde265/de265.h>
+#include "libde265/de265.h"
 
 using namespace heif;
 

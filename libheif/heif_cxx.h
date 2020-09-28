@@ -26,7 +26,7 @@
 #include <vector>
 
 extern "C" {
-#include <libheif/heif.h>
+#include "heif.h"
 }
 
 

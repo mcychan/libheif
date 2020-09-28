@@ -58,6 +58,21 @@ target_compile_definitions(heif
                            PUBLIC
                                LIBHEIF_EXPORTS
                                HAVE_VISIBILITY)
+							   
+if (MSVC)
+	add_compile_options(/D_CRT_SECURE_NO_WARNINGS)	
+		set(LIBDE265_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libde265")
+		set(X265_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libx265")
+	if(NOT CMAKE_CL_64)
+		set(LIBDE265_LIBRARIES "${LIBDE265_INCLUDE_DIR}/libde265.lib")
+		set(X265_LIBRARIES "${X265_INCLUDE_DIR}/libx265.lib")
+	else()
+		set(LIBDE265_LIBRARIES "${LIBDE265_INCLUDE_DIR}/libde265-64.lib")
+		set(X265_LIBRARIES "${X265_INCLUDE_DIR}/libx265-64.lib")
+	endif()
+	set(LIBDE265_FOUND EXISTS ${LIBDE265_LIBRARIES})
+	set(X265_FOUND EXISTS ${X265_LIBRARIES})
+endif()
 
 if(LIBDE265_FOUND)
     target_compile_definitions(heif PRIVATE HAVE_LIBDE265=1)
@@ -126,21 +141,18 @@ if(USE_LOCAL_RAV1E)
     target_link_libraries(heif PRIVATE ${CMAKE_SOURCE_DIR}/third-party/rav1e/target/release/librav1e.a -ldl)
 endif()
 
-if(DAV1D_FOUND)
+if(USE_LOCAL_DAV1D)
     target_compile_definitions(heif PRIVATE HAVE_DAV1D=1)
     target_sources(heif PRIVATE
             heif_decoder_dav1d.cc
             heif_decoder_dav1d.h
             )
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${DAV1D_CFLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DAV1D_CFLAGS}")
+    target_include_directories(heif PRIVATE ${CMAKE_SOURCE_DIR}/third-party/dav1d/build
+            ${CMAKE_SOURCE_DIR}/third-party/dav1d/build/include
+            ${CMAKE_SOURCE_DIR}/third-party/dav1d/build/include/dav1d
+            ${CMAKE_SOURCE_DIR}/third-party/dav1d/include)
 
-    if (NOT "${DAV1D_LIBRARY_DIRS}" STREQUAL "")
-        set(DAV1D_LINKDIR "-L${DAV1D_LIBRARY_DIRS}")
-    endif()
-
-    include_directories(SYSTEM ${DAV1D_INCLUDE_DIR})
-    target_link_libraries(heif PRIVATE ${DAV1D_LIBRARIES} ${DAV1D_LINKDIR})
+    target_link_libraries(heif PRIVATE ${CMAKE_SOURCE_DIR}/third-party/dav1d/build/src/libdav1d.a -ldl)
 endif ()
 
 write_basic_package_version_file(${PROJECT_NAME}-config-version.cmake COMPATIBILITY ExactVersion)
