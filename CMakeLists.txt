@@ -115,7 +115,7 @@ macro(plugin_compilation_info optionVariableName detectionVariable displayName)
     endif ()
 
     string(LENGTH "${displayName}" len)
-    math(EXPR fill "38 - ${len}")
+    math(EXPR fill "32 - ${len}")
     string(SUBSTRING "                                                   " 0 ${fill} filler)
     message("${displayName}${filler}: ${msg}")
     unset(msg)
@@ -149,7 +149,7 @@ endif ()
 
 # uvg266
 
-plugin_option(UVG266 "uvg266 VVC encoder" OFF OFF)
+plugin_option(UVG266 "uvg266 VVC encoder (experimental)" OFF OFF)
 if (WITH_UVG266)
     find_package(UVG266)
     if ("${HAVE_UVG266_ENABLE_LOGGING}")
@@ -161,7 +161,7 @@ endif ()
 
 # vvdec
 
-plugin_option(VVDEC "vvdec VVC decoder" OFF OFF)
+plugin_option(VVDEC "vvdec VVC decoder (experimental)" OFF OFF)
 if (WITH_VVDEC)
     # TODO: how to do configure vvdec cleanly?
     find_package(Threads REQUIRED)
@@ -173,7 +173,7 @@ endif ()
 
 # vvenc
 
-plugin_option(VVENC "vvenc VVC encoder" OFF OFF)
+plugin_option(VVENC "vvenc VVC encoder (experimental)" OFF OFF)
 if (WITH_VVENC)
     # TODO: how to do configure vvenc cleanly?
     find_package(Threads REQUIRED)
@@ -284,20 +284,12 @@ endif()
 
 option(WITH_UNCOMPRESSED_CODEC " Support internal ISO/IEC 23001-17 uncompressed codec (experimental) " OFF)
 
-# Web codecs
-
-option(WITH_WEBCODECS "Support HEVC decoding through browser web codecs API (experimental)" OFF)
-
-if (WITH_WEBCODECS)
-   set(WEBCODECS_FOUND TRUE) # There is no library for web-codecs. Always mark as found.
-endif()
 
 # --- show codec compilation summary
 
 message("\n=== Summary of compiled codecs ===")
 plugin_compilation_info(LIBDE265 LIBDE265 "libde265 HEVC decoder")
 plugin_compilation_info(FFMPEG_DECODER FFMPEG_avcodec "FFMPEG HEVC decoder (HW acc)")
-plugin_compilation_info(WEBCODECS WEBCODECS "WebCodecs HEVC decoder (experimental)")
 plugin_compilation_info(X265 X265 "x265 HEVC encoder")
 plugin_compilation_info(KVAZAAR KVAZAAR "Kvazaar HEVC encoder")
 plugin_compilation_info(AOM_DECODER AOM_DECODER "AOM AV1 decoder")
@@ -313,9 +305,9 @@ plugin_compilation_info(OpenJPEG_DECODER OpenJPEG "OpenJPEG J2K decoder")
 plugin_compilation_info(OpenJPEG_ENCODER OpenJPEG "OpenJPEG J2K encoder")
 # plugin_compilation_info(OPENJPH_DECODER OPENJPH "OpenJPH HT-J2K decoder")
 plugin_compilation_info(OPENJPH_ENCODER OPENJPH "OpenJPH HT-J2K encoder")
-plugin_compilation_info(UVG266_ENCODER UVG266 "uvg266 VVC encoder")
-plugin_compilation_info(VVENC vvenc "vvenc VVC encoder")
-plugin_compilation_info(VVDEC vvdec "vvdec VVC decoder")
+plugin_compilation_info(UVG266_ENCODER UVG266 "uvg266 VVC enc. (experimental)")
+plugin_compilation_info(VVENC vvenc "vvenc VVC enc. (experimental)")
+plugin_compilation_info(VVDEC vvdec "vvdec VVC dec. (experimental)")
 
 # --- show summary which formats are supported
 
@@ -340,7 +332,7 @@ macro(format_compilation_info formatName decoding_supported encoding_supported)
 endmacro()
 
 
-if (LIBDE265_FOUND OR FFMPEG_avcodec_FOUND OR WITH_WEBCODECS)
+if (LIBDE265_FOUND OR FFMPEG_avcodec_FOUND)
     set(SUPPORTS_HEIC_DECODING TRUE)
 endif()
 if (X265_FOUND OR KVAZAAR_FOUND)
@@ -404,7 +396,7 @@ message("")
 
 # --- Libsharpyuv color space transforms
 
-option(WITH_LIBSHARPYUV "Build libsharpyuv" ON)
+option(WITH_LIBSHARPYUV "Build libsharpyuv" OFF)
 option(WITH_LIBSHARPYUV_INTERNAL "Use the libsharpyuv build in the 'third-party' directory" OFF)
 if (WITH_LIBSHARPYUV)
    if (WITH_LIBSHARPYUV_INTERNAL)
@@ -513,13 +505,13 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libheif.pc
 # ---
 
 option(WITH_EXAMPLES "Build examples" ON)
-option(WITH_EXAMPLE_HEIF_THUMB "Build heif-thumbnailer tool" ON)
-option(WITH_EXAMPLE_HEIF_VIEW "Build heif-view tool" ON)
-option(WITH_GDK_PIXBUF "Build gdk-pixbuf plugin" ON)
+option(WITH_EXAMPLE_HEIF_THUMB "Build heif-thumbnailer tool" OFF)
+option(WITH_EXAMPLE_HEIF_VIEW "Build heif-view tool" OFF)
+option(WITH_GDK_PIXBUF "Build gdk-pixbuf plugin" OFF)
 
 option(WITH_REDUCED_VISIBILITY "Reduced symbol visibility in library" ON)
 
-option(WITH_HEADER_COMPRESSION OFF)
+option(WITH_HEADER_COMPRESSION ON)
 option(ENABLE_MULTITHREADING_SUPPORT "Switch off for platforms without multithreading support" ON)
 option(ENABLE_PARALLEL_TILE_DECODING "Will launch multiple decoders to decode tiles in parallel (requires ENABLE_MULTITHREADING_SUPPORT)" ON)
 
@@ -540,7 +532,7 @@ endif()
 # --- API documentation
 
 # check if Doxygen is installed
-option(BUILD_DOCUMENTATION "Build doxygen documentation" ON)
+option(BUILD_DOCUMENTATION "Build doxygen documentation" OFF)
 if (BUILD_DOCUMENTATION)
   find_package(Doxygen)
   if (DOXYGEN_FOUND)
@@ -583,7 +575,7 @@ if(ENABLE_COVERAGE)
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
 
-option(BUILD_TESTING "" ON)
+option(BUILD_TESTING "" OFF)
 set(CMAKE_CTEST_ARGUMENTS "--output-on-failure")
 include(CTest)
 if(BUILD_TESTING)

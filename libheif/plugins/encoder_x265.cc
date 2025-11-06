@@ -30,7 +30,7 @@
 #include <vector>
 
 extern "C" {
-#include <x265.h>
+#include "libx265/x265.h"
 }
 
 

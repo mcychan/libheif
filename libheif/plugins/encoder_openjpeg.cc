@@ -23,7 +23,7 @@
 #include "libheif/heif_plugin.h"
 #include "encoder_openjpeg.h"
 
-#include <openjpeg.h>
+#include "openjpeg/openjpeg.h"
 #include <string.h>
 
 #include <vector>

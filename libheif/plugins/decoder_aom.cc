@@ -26,8 +26,8 @@
 #include <cassert>
 #include <string>
 
-#include <aom/aom_decoder.h>
-#include <aom/aomdx.h>
+#include "aom/aom_decoder.h"
+#include "aom/aomdx.h"
 
 
 struct aom_decoder

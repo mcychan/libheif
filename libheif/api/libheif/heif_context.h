@@ -28,8 +28,8 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 
-#include <libheif/heif_library.h>
-#include <libheif/heif_error.h>
+#include "libheif/heif_library.h"
+#include "libheif/heif_error.h"
 
 
 /**

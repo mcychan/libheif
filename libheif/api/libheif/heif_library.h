@@ -67,8 +67,8 @@ extern "C" {
 
 #define heif_fourcc(a, b, c, d) ((uint32_t)((a<<24) | (b<<16) | (c<<8) | d))
 
-#include <libheif/heif_version.h>
-#include <libheif/heif_error.h>
+#include "libheif/heif_version.h"
+#include "libheif/heif_error.h"
 
 
 /* === version numbers === */
